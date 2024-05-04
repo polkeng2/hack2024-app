@@ -1,9 +1,9 @@
-import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flutter_testing/level.dart';
+import 'package:flame_tiled/flame_tiled.dart';
+// import 'package:flutter_testing/level.dart';
 import 'dart:ui';
 import 'dart:async';
 
@@ -11,53 +11,114 @@ class PlazaGame extends FlameGame
     with
         ScrollDetector,
         ScaleDetector,
-        MultiTouchTapDetector,
+        TapDetector,
         MultiTouchDragDetector {
   @override
   Color backgroundColor() => const Color.fromARGB(255, 5, 234, 81);
 
+  late TiledComponent mapC;
   late final CameraComponent cam;
+  static const zoomPerScrollUnit = 0.02;
+  static const double _minZoom = 0.5;
+  static const double _maxZoom = 2.0;
+  double _startZoom = _minZoom;
 
-  final world2 = Level();
+  //final world2 = Level();
 
   @override
   Future<void> onLoad() async {
+    /*
+
     cam = CameraComponent(
         world: world2, viewport: MaxViewport(), viewfinder: Viewfinder());
 
-    cam.viewfinder.anchor = Anchor.topLeft;
+    //cam.viewfinder.anchor = Anchor.center;
+    */
+    camera.viewfinder
+      ..zoom = _startZoom
+      ..anchor = Anchor.center;
 
-    addAll([cam, world2]);
-    return super.onLoad();
+    camera.moveBy(Vector2(32*16, 32*16));
+
+    mapC = await TiledComponent.load(
+      'Plaza-01.tmx',
+      Vector2(32, 32),
+    );
+    world.add(mapC);
+    //addAll([cam, world2]);
+    //return super.onLoad();
   }
 
   void clampZoom() {
-    cam.viewfinder.zoom = cam.viewfinder.zoom.clamp(0.05, 3.0);
+    camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(0.05, 3.0);
   }
 
-  static const zoomPerScrollUnit = 0.02;
 
   @override
   void onScroll(PointerScrollInfo info) {
-    cam.viewfinder.zoom += info.scrollDelta.global.y.sign * zoomPerScrollUnit;
+    camera.viewfinder.zoom += info.scrollDelta.global.y.sign * zoomPerScrollUnit;
     clampZoom();
   }
 
-  late double startZoom;
   @override
-  void onScaleStart(_) {
-    startZoom = cam.viewfinder.zoom;
+  void onScaleStart(ScaleStartInfo info) {
+    _startZoom = camera.viewfinder.zoom;
   }
 
   @override
   void onScaleUpdate(ScaleUpdateInfo info) {
     final currentScale = info.scale.global;
     if (!currentScale.isIdentity()) {
-      cam.viewfinder.zoom = startZoom * currentScale.y;
+      camera.viewfinder.zoom = _startZoom * currentScale.y;
+      _processDrag(info);
       clampZoom();
     } else {
       final delta = info.delta.global;
-      cam.viewfinder.position.translate(-delta.x, -delta.y);
+      camera.viewfinder.position.translate(-delta.x, -delta.y);
     }
+  }
+
+  void _processDrag(ScaleUpdateInfo info) {
+    final delta = info.delta.global;
+    final zoomDragFactor = 1.0 / _startZoom;
+    final currentPosition = camera.viewfinder.position;
+
+    camera.viewfinder.position = currentPosition.translated(
+      -delta.x * zoomDragFactor,
+      -delta.y * zoomDragFactor,
+    );
+  }
+
+  @override
+  void onScaleEnd(ScaleEndInfo info) {
+    _checkScaleBorders();
+    _checkDragBorders();
+  }
+
+  void _checkScaleBorders() {
+    camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(_minZoom, _maxZoom);
+  }
+
+  void _checkDragBorders() {
+    final worldRect = camera.visibleWorldRect;
+    final currentPosition = camera.viewfinder.position;
+    final mapSize = Offset(mapC.width, mapC.height);
+
+    var xTranslate = 0.0;
+    var yTranslate = 0.0;
+
+    if (worldRect.topLeft.dx < 0.0) {
+      xTranslate = -worldRect.topLeft.dx;
+    } else if (worldRect.bottomRight.dx > mapSize.dx) {
+      xTranslate = mapSize.dx - worldRect.bottomRight.dx;
+    }
+
+    if (worldRect.topLeft.dy < 0.0) {
+      yTranslate = -worldRect.topLeft.dy;
+    } else if (worldRect.bottomRight.dy > mapSize.dy) {
+      yTranslate = mapSize.dy - worldRect.bottomRight.dy;
+    }
+
+    camera.viewfinder.position = currentPosition.translated(xTranslate, yTranslate);
   }
 }
