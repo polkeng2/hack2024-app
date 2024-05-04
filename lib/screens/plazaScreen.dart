@@ -11,7 +11,11 @@ class PlazaScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My space!'),
+        title: const Text(
+          'My space!',
+          textAlign: TextAlign.center,
+          selectionColor: Colors.white,
+        ),
         backgroundColor: Colors.green,
       ),
       body: GameWidget(game: game),

@@ -17,13 +17,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Connect with others!',
       theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 72, 192, 59)),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          titleSpacing: 32.0,
+        ),
         useMaterial3: true,
       ),
-      home: PlazaScreen(),
+      home: const ProfileScreen(),
+      routes: {
+        '/plaza': (context) => PlazaScreen(),
+        '/profile': (context) => const ProfileScreen(),
+      },
     );
   }
 }

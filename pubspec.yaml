@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flame: ^1.17.0
   flame_tiled: ^1.20.1
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -60,7 +61,6 @@ flutter:
   assets:
     - assets/tiles/
     - assets/images/
-    - assets/images/profile/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

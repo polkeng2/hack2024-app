@@ -8,11 +8,7 @@ import 'dart:ui';
 import 'dart:async';
 
 class PlazaGame extends FlameGame
-    with
-        ScrollDetector,
-        ScaleDetector,
-        TapDetector,
-        MultiTouchDragDetector {
+    with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
   @override
   Color backgroundColor() => const Color.fromARGB(255, 5, 234, 81);
 
@@ -29,7 +25,7 @@ class PlazaGame extends FlameGame
       ..zoom = _startZoom
       ..anchor = Anchor.center;
 
-    camera.moveBy(Vector2(32*16, 32*16));
+    camera.moveBy(Vector2(32 * 16, 32 * 16));
 
     mapC = await TiledComponent.load(
       'Plaza-01.tmx',
@@ -41,7 +37,6 @@ class PlazaGame extends FlameGame
   void clampZoom() {
     camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(_minZoom, _maxZoom);
   }
-
 
   @override
   void onScroll(PointerScrollInfo info) {
