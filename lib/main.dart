@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_testing/plazaGame.dart';
 import 'package:flutter_testing/screens/homeScreen.dart';
+import 'package:flutter_testing/screens/profileScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 72, 192, 59)),
         useMaterial3: true,
       ),
-      home: HomeScreen(),
+      home: const ProfilePage(),
     );
   }
 }
