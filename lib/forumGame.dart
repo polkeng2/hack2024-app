@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -9,14 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_testing/components/actor.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 
-class ForumGame extends FlameGame 
-with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
-  final FunctionStringCallback callback;
+typedef StringCall = void Function(String);
+
+class ForumGame extends FlameGame
+    with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
+  final StringCall callback;
 
   List actors = [];
   List actorsName = [];
   String type;
-  ForumGame({required this.type, required this.actorsName, required this.callback});
+  ForumGame(
+      {required this.type, required this.actorsName, required this.callback});
 
   late TiledComponent mapC;
   late final CameraComponent cam;
@@ -26,11 +28,10 @@ with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
   double _startZoom = _maxZoom;
 
   final regular = TextPaint(
-    style: const TextStyle(
-      fontSize: 9,
-      color: Colors.white,
-    )
-  );
+      style: const TextStyle(
+    fontSize: 9,
+    color: Colors.white,
+  ));
 
   @override
   Future<void> onLoad() async {
@@ -50,12 +51,18 @@ with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
     world.add(mapC);
 
     for (int i = 0; i < actorsName.length; ++i) {
-      Actor actor = Actor(position: Vector2(32 * 15 + i.toDouble()*70, 32 * 16), size: Vector2(37, 72), id: actorsName[i]);
+      Actor actor = Actor(
+          position: Vector2(32 * 15 + i.toDouble() * 70, 32 * 16),
+          size: Vector2(37, 72),
+          id: actorsName[i]);
       actor.sprite = await loadSprite('forumStatue.png');
       actors.add(actor);
       world.add(actor);
-      world.add(TextComponent(text: actorsName[i], position: Vector2(32 * 15 + i.toDouble()*70, 32 * 16 + 75), textRenderer: regular));
-    }  
+      world.add(TextComponent(
+          text: actorsName[i],
+          position: Vector2(32 * 15 + i.toDouble() * 70, 32 * 16 + 75),
+          textRenderer: regular));
+    }
   }
 
   @override
@@ -80,7 +87,8 @@ with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
 
   @override
   void onScroll(PointerScrollInfo info) {
-    camera.viewfinder.zoom += info.scrollDelta.global.y.sign * zoomPerScrollUnit;
+    camera.viewfinder.zoom +=
+        info.scrollDelta.global.y.sign * zoomPerScrollUnit;
     _checkScaleBorders();
     _checkDragBorders();
   }
@@ -104,7 +112,7 @@ with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
   }
 
   @override
-  void onDragUpdate(int pointerId, DragUpdateInfo info)  {
+  void onDragUpdate(int pointerId, DragUpdateInfo info) {
     _processDrag(info);
   }
 
@@ -144,6 +152,7 @@ with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
       yTranslate = mapSize.dy - worldRect.bottomRight.dy;
     }
 
-    camera.viewfinder.position = currentPosition.translated(xTranslate, yTranslate);
+    camera.viewfinder.position =
+        currentPosition.translated(xTranslate, yTranslate);
   }
 }

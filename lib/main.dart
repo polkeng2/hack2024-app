@@ -3,10 +3,19 @@ import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_testing/plazaGame.dart';
+import 'package:flutter_testing/screens/dateListScreen.dart';
+import 'package:flutter_testing/screens/dateScreen.dart';
+import 'package:flutter_testing/screens/forumScreen.dart';
 import 'package:flutter_testing/screens/plazaScreen.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
+import 'package:localstorage/localstorage.dart';
 
-void main() {
+late final ValueNotifier<String> token;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initLocalStorage();
+
+  token = ValueNotifier<String>(localStorage.getItem('token') ?? '');
   runApp(const MyApp());
 }
 
@@ -28,10 +37,16 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const ProfileScreen(),
+      home: switch (token.value == '') {
+        true => PlazaScreen(),
+        false => PlazaScreen(),
+      },
       routes: {
         '/plaza': (context) => PlazaScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/setDate': (context) => const DateScreen(),
+        '/dateList': (context) => const DateListScreen(),
+        '/forum': (context) => const ForumScreen(),
       },
     );
   }

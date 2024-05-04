@@ -11,9 +11,19 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late bool editable = false;
+
+  //Esto viene de la api, se hace llamada si token.value.isEmpty
+
+  //late Future<List<ApiMarker>> futureApiMarkers = ApiMarker.getMarkers();
+
+  late String name = 'Roger';
+  late String hobbies = "Volunteering, reading, and playing the guitar.";
+
   late TextEditingController nameController = TextEditingController();
   late TextEditingController hobbiesController = TextEditingController();
 
+  //Esto api?
   List<Widget> items = [
     Image.asset('assets/images/profile_icon.png'),
     Image.asset('assets/images/profile_icon2.png'),
@@ -23,38 +33,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text(
+          'Profile',
+          textAlign: TextAlign.center,
+          selectionColor: Colors.white,
+        ),
         centerTitle: true,
         backgroundColor: Colors.green,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.green,
-              ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('Profile'),
-              onTap: () {
-                //Navigator.pushNamed(context, '/profile');
-              },
-            ),
-            ListTile(
-              title: const Text('Plaza'),
-              onTap: () {
-                Navigator.pushNamed(context, '/plaza');
-              },
-            ),
-          ],
-        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -65,50 +50,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 30),
               const Text('Name',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your name',
-                ),
-              ),
-              SizedBox(height: 30), //const SizedBox(height: 20),
+              switch (editable) {
+                true => TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      hintText: name,
+                    ),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                false => Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.normal),
+                    ),
+                  ),
+              },
+
+              const SizedBox(height: 30), //const SizedBox(height: 20),
               const Text('Hobbies',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-              TextField(
-                controller: hobbiesController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your hobbies',
-                ),
-              ),
-/* Image(
-                    image: AssetImage('assets/images/profile_icon.png'),
-                    width: 200,
-                    height: 200), */
+              switch (editable) {
+                true => TextField(
+                    controller: hobbiesController,
+                    decoration: InputDecoration(
+                      hintText: hobbies,
+                    ),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                false => Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(hobbies,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.normal)),
+                  ),
+              },
+
               const SizedBox(height: 50),
               Column(
                 children: [
-                  const Text('Choose your avatar:',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Center(
+                    child: Text('Choose your avatar:',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                  ),
                   const SizedBox(height: 40),
-                  CarouselSlider(
-                      items: items,
-                      options: CarouselOptions(
-                        height: 200,
-                        aspectRatio: 1.0,
-                        viewportFraction: 0.67,
-                        initialPage: 0,
-                        enableInfiniteScroll: true,
-                        reverse: false,
-                        /* autoPlay: true,
+                  switch (editable) {
+                    true => CarouselSlider(
+                        items: items,
+                        options: CarouselOptions(
+                          height: 200,
+                          aspectRatio: 1.0,
+                          viewportFraction: 0.67,
+                          initialPage: 0,
+                          enableInfiniteScroll: true,
+                          reverse: false,
+                          /* autoPlay: true,
                               autoPlayInterval: Duration(seconds: 3),
                               autoPlayAnimationDuration: Duration(milliseconds: 800),
                               autoPlayCurve: Curves.fastOutSlowIn, */
-                        //enlargeCenterPage: true,
-                        //enlargeFactor: 0.3,
-                        //onPageChanged: callbackFunction,
-                        scrollDirection: Axis.horizontal,
-                      )),
+                          //enlargeCenterPage: true,
+                          //enlargeFactor: 0.3,
+                          //onPageChanged: callbackFunction,
+                          scrollDirection: Axis.horizontal,
+                        )),
+                    false => const Image(
+                        image: AssetImage('assets/images/profile_icon.png'),
+                        width: 200,
+                        height: 200),
+                  },
                 ],
               ),
               const SizedBox(height: 70),
@@ -127,11 +144,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     //name: nameController.text; hobbies: hobbiesController.text;
                     //Navigator.pushNamed(context, '/plaza');
+                    /* setState(() {
+                      if (editable) {
+                        name = nameController.text;
+                        hobbies = hobbiesController.text;
+                      } else {
+                        nameController.text = name;
+                        hobbiesController.text = hobbies;
+                      }
+                      editable = !editable;
+                    }); */
                   },
-                  child: const Text(
-                    'Start!',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
+                  child: switch (editable) {
+                    true => const Text("Save changes",
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                    false => const Text("Edit profile",
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                  },
                 ),
               )
             ],
