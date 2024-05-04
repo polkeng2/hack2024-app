@@ -19,21 +19,12 @@ class PlazaGame extends FlameGame
   late TiledComponent mapC;
   late final CameraComponent cam;
   static const zoomPerScrollUnit = 0.02;
-  static const double _minZoom = 0.5;
+  static const double _minZoom = 1.0;
   static const double _maxZoom = 2.0;
-  double _startZoom = _minZoom;
-
-  //final world2 = Level();
+  double _startZoom = _maxZoom;
 
   @override
   Future<void> onLoad() async {
-    /*
-
-    cam = CameraComponent(
-        world: world2, viewport: MaxViewport(), viewfinder: Viewfinder());
-
-    //cam.viewfinder.anchor = Anchor.center;
-    */
     camera.viewfinder
       ..zoom = _startZoom
       ..anchor = Anchor.center;
@@ -45,19 +36,18 @@ class PlazaGame extends FlameGame
       Vector2(32, 32),
     );
     world.add(mapC);
-    //addAll([cam, world2]);
-    //return super.onLoad();
   }
 
   void clampZoom() {
-    camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(0.05, 3.0);
+    camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(_minZoom, _maxZoom);
   }
 
 
   @override
   void onScroll(PointerScrollInfo info) {
     camera.viewfinder.zoom += info.scrollDelta.global.y.sign * zoomPerScrollUnit;
-    clampZoom();
+    _checkScaleBorders();
+    _checkDragBorders();
   }
 
   @override
@@ -70,15 +60,20 @@ class PlazaGame extends FlameGame
     final currentScale = info.scale.global;
     if (!currentScale.isIdentity()) {
       camera.viewfinder.zoom = _startZoom * currentScale.y;
-      _processDrag(info);
-      clampZoom();
+      _checkScaleBorders();
+      _checkDragBorders();
     } else {
       final delta = info.delta.global;
       camera.viewfinder.position.translate(-delta.x, -delta.y);
     }
   }
 
-  void _processDrag(ScaleUpdateInfo info) {
+  @override
+  void onDragUpdate(int pointerId, DragUpdateInfo info)  {
+    _processDrag(info);
+  }
+
+  void _processDrag(DragUpdateInfo info) {
     final delta = info.delta.global;
     final zoomDragFactor = 1.0 / _startZoom;
     final currentPosition = camera.viewfinder.position;
@@ -87,11 +82,6 @@ class PlazaGame extends FlameGame
       -delta.x * zoomDragFactor,
       -delta.y * zoomDragFactor,
     );
-  }
-
-  @override
-  void onScaleEnd(ScaleEndInfo info) {
-    _checkScaleBorders();
     _checkDragBorders();
   }
 
@@ -121,4 +111,6 @@ class PlazaGame extends FlameGame
 
     camera.viewfinder.position = currentPosition.translated(xTranslate, yTranslate);
   }
+/*
+  */
 }
