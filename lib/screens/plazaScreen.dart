@@ -1,7 +1,9 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_testing/components/user.dart';
 import 'package:flutter_testing/plazaGame.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
+import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 
 class PlazaScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class PlazaScreen extends StatefulWidget {
 }
 
 class _PlazaScreenState extends State<PlazaScreen> {
-  PlazaGame game = PlazaGame();
+  late PlazaGame game;
 
   @override
   void initState() {
@@ -23,6 +25,9 @@ class _PlazaScreenState extends State<PlazaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var user = context.watch<User>();
+    game = PlazaGame(user: user);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text(

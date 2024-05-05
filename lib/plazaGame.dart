@@ -7,8 +7,13 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'dart:ui';
 import 'dart:async';
 
+import 'package:flutter_testing/components/actor.dart';
+import 'package:flutter_testing/components/user.dart';
+
 class PlazaGame extends FlameGame
     with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
+  User user;
+  PlazaGame({ required this.user });
   @override
   Color backgroundColor() => const Color.fromARGB(255, 5, 234, 81);
 
@@ -18,6 +23,9 @@ class PlazaGame extends FlameGame
   static const double _minZoom = 1.0;
   static const double _maxZoom = 1.2;
   double _startZoom = _maxZoom;
+
+  List friend = [];
+  late Actor userAvatar;
 
   @override
   Future<void> onLoad() async {
@@ -32,6 +40,10 @@ class PlazaGame extends FlameGame
       Vector2(32, 32),
     );
     world.add(mapC);
+
+    Actor actor = Actor(position: Vector2(32*15, 32*13), size: Vector2(54, 80), id: user.name);
+    actor.sprite = await loadSprite(user.avatarSprite.replaceFirst(RegExp('assets/images/'), ''));
+    world.add(actor);
   }
 
   void clampZoom() {
