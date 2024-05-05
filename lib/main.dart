@@ -107,37 +107,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-/* class MyApp extends StatelessWidget {
-  MyApp({super.key});
-  bool firstTime = UserToken.isFirstTime();
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Connect with others!',
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.green,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-          titleSpacing: 32.0,
-        ),
-        useMaterial3: true,
-      ),
-      home: switch (firstTime) {
-        true => const ProfileScreen(),
-        false => PlazaScreen(),
-      },
-      routes: {
-        '/plaza': (context) => PlazaScreen(),
-        '/profile': (context) => const ProfileScreen(),
-        '/dateList': (context) => const DateListScreen(),
-        '/explore': (context) => const ForumScreen(),
-      },
-    );
-  }
-}
- */

@@ -173,7 +173,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         user.setUserName(name);
                         user.setUserHobbies(hobbies);
                         user.setUserAvatar(avatarNameFiles[_currentIndex]);
-                        UserToken.removeToken();
                       } else {
                         nameController.text = user.name;
                         hobbiesController.text = user.hobbies;
