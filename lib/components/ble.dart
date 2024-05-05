@@ -44,7 +44,9 @@ class Ble {
     int id = 0;
 
     Uint8List payload = device.manufacturerData;
-    id = payload[0] | (payload[1] << 8) | (payload[2] << 16) | (payload[3] << 24);
+    id = payload[2] | (payload[3] << 8) | (payload[4] << 16) | (payload[5] << 24);
+
+    print("Payload = $payload, payload0 = ${payload[0]}");
 
     log("Discovered \"${device.name}\", Id: $id");
     // Notify
