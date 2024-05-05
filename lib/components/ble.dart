@@ -40,7 +40,13 @@ class Ble {
   }
 
   void handleNewDevice(DiscoveredDevice device) {
-    log("Discovered \"${device.name}\" (${device.id})");
+    String name = device.name;
+    int id = 0;
+
+    Uint8List payload = device.manufacturerData;
+    id = payload[0] | (payload[1] << 8) | (payload[2] << 16) | (payload[3] << 24);
+
+    log("Discovered \"${device.name}\", Id: $id");
     // Notify
   }
 
