@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_testing/components/user.dart';
 import 'package:flutter_testing/plazaGame.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -19,8 +20,16 @@ class _PlazaScreenState extends State<PlazaScreen> {
   @override
   void initState() {
     print("PlazaScreen initialized, triggering ble-init...");
-    Workmanager().registerOneOffTask('ble-init', 'ble-init', inputData: { 'name': 'Polkeng' } );
-    print("ble-init triggered");
+    print("Check BLE permissions...");
+
+    [ Permission.bluetooth, Permission.bluetoothScan, Permission.bluetoothConnect, Permission.bluetoothAdvertise, Permission.location, Permission.locationWhenInUse ].request().then((statuses) {
+      print(statuses);
+
+      // TODO: Handle permissions...
+      //  print("PlazaScreen initialized, triggering ble-init...");
+      Workmanager().registerOneOffTask('1', 'ble-init', inputData: { 'name': 'Polkeng', 'id': 1, } );
+      print("ble-init triggered");
+    });
   }
 
   @override

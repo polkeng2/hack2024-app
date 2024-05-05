@@ -1,9 +1,8 @@
-import 'dart:js';
-
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_testing/components/ble.dart';
 import 'package:flutter_testing/components/user.dart';
 import 'package:flutter_testing/plazaGame.dart';
 import 'package:flutter_testing/screens/dateListScreen.dart';
@@ -16,11 +15,18 @@ import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 
 late final ValueNotifier<String> token;
+late bool bleInitialized = false;
 
 void wmDispatcher() {
-  Workmanager().executeTask((taskName, inputData) {
+  Workmanager().executeTask((taskName, inputData) async {
     switch (taskName) {
       case 'ble-init':
+        if (bleInitialized) {
+          return Future.value(true);
+        }
+
+        bleInitialized = true;
+
         // bluetooth init...
         if (inputData == null) {
           print("WM (ble-init): inputData cannot be null!");
@@ -32,9 +38,12 @@ void wmDispatcher() {
           return Future.value(false);
         }
 
-        String username = inputData["name"];
-        print("WM (ble-init): Initialize BLE with name = $username");
-        
+        String name = inputData["name"];
+        int id = inputData["id"];
+        print("WM (ble-init): Initialize BLE with name = $name, id = $id");
+
+        Ble(name: name, id: id).initialize();
+        await Future.delayed(const Duration(days: 1));
         break;
       default:
         print("WM: Undefined task!");
@@ -48,7 +57,8 @@ void wmDispatcher() {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocalStorage();
-  Workmanager().initialize(wmDispatcher);
+  await Workmanager().cancelAll();
+  await Workmanager().initialize(wmDispatcher);
 
   token = ValueNotifier<String>(localStorage.getItem('token') ?? '');
   runApp(ChangeNotifierProvider(create: (context) => User(), child: const MyApp(),),);
