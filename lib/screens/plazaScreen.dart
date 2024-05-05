@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_testing/components/user.dart';
+import 'package:flutter_testing/meetsGame.dart';
 import 'package:flutter_testing/plazaGame.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,16 @@ class PlazaScreen extends StatefulWidget {
 }
 
 class _PlazaScreenState extends State<PlazaScreen> {
-  late PlazaGame game;
+  late PlazaGame gamePlaza;
+  late MeetsGame gameAwait;
+
+  late User usr1;
+  late User usr2;
+  late List users;
+
+  bool isZone = true;
+
+  String nameAwaitUser = "name";
 
   @override
   void initState() {
@@ -26,8 +36,13 @@ class _PlazaScreenState extends State<PlazaScreen> {
   @override
   Widget build(BuildContext context) {
     var user = context.watch<User>();
-    game = PlazaGame(user: user);
-    
+    usr1 = User("Alvaro", "assets/images/enchantressICON.png", "Play");
+    usr2 = User("Sara", "assets/images/wizardICON.png", "Hack");
+    users = [ usr1, usr2 ];
+
+    gamePlaza = PlazaGame(user: user);
+    gameAwait = MeetsGame(mapTiled: "Forum.tmx", users: users, callback: (val) => setState(() => showUser(val)));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -129,7 +144,41 @@ class _PlazaScreenState extends State<PlazaScreen> {
           ],
         ),
       ),
-      body: GameWidget(game: game),
+      body: GameWidget(game: isZone? gamePlaza : gameAwait),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            isZone = !isZone;
+          });
+        },
+        foregroundColor: Colors.black,
+        backgroundColor: isZone? Colors.white : Colors.grey,
+        shape: const CircleBorder(),
+        child: isZone? const Text("meets!") : const Text("my zone"),
+      ),
+    );
+  }
+
+  void showUser(String userName) async {
+    User findUser(String id) => users.firstWhere((user) => user.name == userName);
+    User userShown = findUser(userName);
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(userShown.name),
+        content: Text(userShown.hobbies),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Add friend'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
     );
   }
 

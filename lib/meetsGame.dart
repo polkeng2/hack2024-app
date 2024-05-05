@@ -1,51 +1,95 @@
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame_tiled/flame_tiled.dart';
-// import 'package:flutter_testing/level.dart';
-import 'dart:ui';
-import 'dart:async';
-
+import 'package:flame/input.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_testing/components/actor.dart';
-import 'package:flutter_testing/components/user.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 
-class PlazaGame extends FlameGame
+typedef StringCall = void Function(String);
+
+class MeetsGame extends FlameGame
     with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
-  User user;
-  PlazaGame({ required this.user });
-  @override
-  Color backgroundColor() => const Color.fromARGB(255, 5, 234, 81);
+  final StringCall callback;
+
+  List actors = [];
+  List users = [];
+  String mapTiled;
+  MeetsGame(
+      {required this.mapTiled,
+      required this.users,
+      required this.callback});
 
   late TiledComponent mapC;
   late final CameraComponent cam;
   static const zoomPerScrollUnit = 0.02;
   static const double _minZoom = 1.0;
-  static const double _maxZoom = 1.2;
+  static const double _maxZoom = 1.0;
   double _startZoom = _maxZoom;
 
-  List friend = [];
-  late Actor userAvatar;
+  final regular = TextPaint(
+      style: const TextStyle(
+    fontSize: 9,
+    color: Colors.white,
+  ));
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
+
+    // CAMERA
     camera.viewfinder
       ..zoom = _startZoom
       ..anchor = Anchor.center;
 
-    camera.moveBy(Vector2(32 * 16, 32 * 16));
+    camera.moveBy(Vector2(32 * 14, 32 * 16));
 
     mapC = await TiledComponent.load(
-      'Plaza.tmx',
+      mapTiled,
       Vector2(32, 32),
     );
     world.add(mapC);
-
-    Actor actor = Actor(position: Vector2(32*15, 32*13), size: Vector2(54, 80), id: user.name);
-    actor.sprite = await loadSprite(user.avatarSprite.replaceFirst(RegExp('assets/images/'), ''));
-    world.add(actor);
+    int countY = 0, multX = 0, multY = 1;
+    for (int i = 0; i < users.length; ++i) {
+      double posX = 32 * 8 + multX * 100;
+      double posY = 32 * 8 + multY.toDouble() * 100;
+      ++countY;
+      ++multX;
+      if (countY == 5) {
+        ++multY;
+        multX = 0;
+        countY = 0;
+      }
+      Actor actor = Actor(
+          position: Vector2(posX, posY),
+          size: Vector2(37, 72),
+          id: users[i].name);
+      actor.sprite = await loadSprite(users[i].avatarSprite.replaceFirst(RegExp('assets/images/'), ''));
+      actors.add(actor);
+      world.add(actor);
+      
+      world.add(TextComponent(
+          text: users[i].name,
+          position: Vector2(posX, posY + 75),
+          textRenderer: regular));
+          
+    }
   }
 
+  @override
+  void onTapUp(TapUpInfo info) {
+    super.onTapUp(info);
+    final clickOnMapPoint = camera.globalToLocal(info.eventPosition.global);
+
+    // Loop through all actors to check if the tap occurred on any of them
+    for (Actor actor in actors) {
+      if (actor.toRect().contains(clickOnMapPoint.toOffset())) {
+        callback(actor.id);
+      }
+    }
+  }
+
+  // CAMERA MOVIMENT
   void clampZoom() {
     camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(_minZoom, _maxZoom);
   }
