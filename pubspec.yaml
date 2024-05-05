@@ -41,6 +41,11 @@ dependencies:
   http: ^1.2.1
   flutter_datetime_picker_plus: ^2.2.0
 
+  # Bluetooth
+  flutter_reactive_ble: ^5.3.1
+  ble_peripheral: ^2.3.0
+  permission_handler: ^11.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
