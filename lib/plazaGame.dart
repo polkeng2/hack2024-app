@@ -13,7 +13,8 @@ import 'package:flutter_testing/components/user.dart';
 class PlazaGame extends FlameGame
     with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
   User user;
-  PlazaGame({ required this.user });
+  List friends;
+  PlazaGame({ required this.user, required this.friends });
   @override
   Color backgroundColor() => const Color.fromARGB(255, 5, 234, 81);
 

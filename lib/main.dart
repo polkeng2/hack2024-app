@@ -41,7 +41,7 @@ void wmDispatcher() {
         int id = inputData["id"];
         print("WM (ble-init): Initialize BLE with name = $name, id = $id");
 
-        Ble(name: name, id: id).initialize();
+        //Ble(name: name, id: id).initialize();
         await Future.delayed(const Duration(days: 1));
         break;
       default:
@@ -55,9 +55,10 @@ void wmDispatcher() {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  /*
   await Workmanager().cancelAll();
   await Workmanager().initialize(wmDispatcher);
-
+*/
   await UserToken.init();
 
   runApp(

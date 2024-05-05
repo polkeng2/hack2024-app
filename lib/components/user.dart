@@ -1,4 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
+
+List avatarNameFiles = [
+    "assets/images/archerICON.png",
+    "assets/images/enchantressICON.png",
+    "assets/images/knightICON.png",
+    "assets/images/wizardICON.png",
+  ];
 
 class User extends ChangeNotifier {
   late String id = "id";
@@ -52,6 +61,10 @@ class User extends ChangeNotifier {
 
   void addFriend(String name, String hobbies, String avatar) {
     friends.add(User(name, hobbies, avatar));
+  }
+
+  void addFriendName(String name) {
+    friends.add(User(name, "play and dance", avatarNameFiles[Random().nextInt(4)]));
   }
 
   String getUserName() {

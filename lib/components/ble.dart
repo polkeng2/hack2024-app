@@ -1,146 +1,150 @@
-import 'dart:async';
+// import 'dart:async';
 
-import 'package:ble_peripheral/ble_peripheral.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:workmanager/workmanager.dart';
+// import 'package:ble_peripheral/ble_peripheral.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+// import 'package:flutter_testing/components/user.dart';
+// import 'package:permission_handler/permission_handler.dart';
+// import 'package:provider/provider.dart';
+// import 'package:workmanager/workmanager.dart';
 
-class Ble {
-  static const APP_UUID = "bf27730d-860a-4e09-889c-2d8b6a9e0fe7";
-  static const APP_UUID2 = "00002A18-0000-1000-8000-00805F9B34FB";
+// class Ble {
+//   static const APP_UUID = "bf27730d-860a-4e09-889c-2d8b6a9e0fe7";
+//   static const APP_UUID2 = "00002A18-0000-1000-8000-00805F9B34FB";
 
-  static bool isInitialized = false;
-  static bool isAdvertising = false;
-  static bool isScanning = false;
+//   static bool isInitialized = false;
+//   static bool isAdvertising = false;
+//   static bool isScanning = false;
 
-  /* User data (shared with nearby people) */
-  late String name;
-  late int id;
+//   /* User data (shared with nearby people) */
+//   late String name;
+//   late int id;
 
-  /* List of discovered devices, should also be synced with backend */
-  Map<String, void> discoveredDevices = {};
+//   /* List of discovered devices, should also be synced with backend */
+//   Map<String, void> discoveredDevices = {};
 
-  late final FlutterReactiveBle flutterReactiveBle;
+//   late final FlutterReactiveBle flutterReactiveBle;
+//     flutterReactiveBle = FlutterReactiveBle();
 
-  Ble( { required this.name, required this.id }) {
-    flutterReactiveBle = FlutterReactiveBle();
-  }
+//   Ble( { required this.name, required this.id }) {
+//   }
 
-  void initialize() async {
-    if (isInitialized) {
-      return;
-    }
+//   void initialize() async {
+//     if (isInitialized) {
+//       return;
+//     }
 
-    isInitialized = true;
+//     isInitialized = true;
 
-    doScan();
-    doAdvertise();
-  }
+//     doScan();
+//     doAdvertise();
+//   }
 
-  void handleNewDevice(DiscoveredDevice device) {
-    String name = device.name;
-    int id = 0;
+//   static void handleNewDevice(BuildContext context, DiscoveredDevice device) {
+//     String name = device.name;
+//     int id = 0;
 
-    Uint8List payload = device.manufacturerData;
-    id = payload[2] | (payload[3] << 8) | (payload[4] << 16) | (payload[5] << 24);
+//     Uint8List payload = device.manufacturerData;
+//     id = payload[2] | (payload[3] << 8) | (payload[4] << 16) | (payload[5] << 24);
 
-    print("Payload = $payload, payload0 = ${payload[0]}");
+//     print("Payload = $payload, payload0 = ${payload[0]}");
 
-    log("Discovered \"${device.name}\", Id: $id");
-    // Notify
-  }
+//     //log("Discovered \"${device.name}\", Id: $id");
 
-  void doScan() async {
-    if (isScanning) {
-      return;
-    }
+//     Provider.of<User>(context, listen: false).addFriendName(device.name);
+//     // Notify
+//   }
 
-    isScanning = true;
+//   void doScan() async {
+//     if (isScanning) {
+//       return;
+//     }
 
-    // Check permissions
-    log("Scanning nearby devices...");
+//     isScanning = true;
 
-    flutterReactiveBle.scanForDevices(withServices: [ Uuid.parse(APP_UUID) ]).listen((device) {
-      // Skip already discovered devices
-      if (discoveredDevices.containsKey(device.id)) {
-        return;
-      }
+//     // Check permissions
+//     log("Scanning nearby devices...");
 
-      discoveredDevices[device.id] = ();
-      handleNewDevice(device);
-    });
-  }
+//     flutterReactiveBle.scanForDevices(withServices: [ Uuid.parse(APP_UUID) ]).listen((device) {
+//       // Skip already discovered devices
+//       if (discoveredDevices.containsKey(device.id)) {
+//         return;
+//       }
 
-  void doAdvertise() async {
-    if (isAdvertising) {
-      return;
-    }
+//       discoveredDevices[device.id] = ();
+//       handleNewDevice(device);
+//     });
+//   }
 
-    isAdvertising = true;
+//   void doAdvertise() async {
+//     if (isAdvertising) {
+//       return;
+//     }
 
-    log("Initializing BlePeripheral...");
-    BlePeripheral.initialize();
+//     isAdvertising = true;
 
-    log("Adding services...");
-    var notificationControlDescriptor = BleDescriptor(
-      uuid: "00002908-0000-1000-8000-00805F9B34FB",
-      value: Uint8List.fromList([0, 1]),
-      permissions: [
-        AttributePermissions.readable.index,
-        AttributePermissions.writeable.index
-      ],
-    );
+//     log("Initializing BlePeripheral...");
+//     BlePeripheral.initialize();
 
-    await BlePeripheral.addService(
-      BleService(
-        uuid: APP_UUID,
-        primary: true,
-        characteristics: [
-          BleCharacteristic(
-            uuid: APP_UUID2,
-            properties: [
-              CharacteristicProperties.read.index,
-              CharacteristicProperties.notify.index,
-              CharacteristicProperties.write.index,
-            ],
-            descriptors: [notificationControlDescriptor],
-            value: null,
-            permissions: [
-              AttributePermissions.readable.index,
-              AttributePermissions.writeable.index
-            ],
-          ),
-        ],
-      ),
-    );
+//     log("Adding services...");
+//     var notificationControlDescriptor = BleDescriptor(
+//       uuid: "00002908-0000-1000-8000-00805F9B34FB",
+//       value: Uint8List.fromList([0, 1]),
+//       permissions: [
+//         AttributePermissions.readable.index,
+//         AttributePermissions.writeable.index
+//       ],
+//     );
 
-    log("Building payload...");
+//     await BlePeripheral.addService(
+//       BleService(
+//         uuid: APP_UUID,
+//         primary: true,
+//         characteristics: [
+//           BleCharacteristic(
+//             uuid: APP_UUID2,
+//             properties: [
+//               CharacteristicProperties.read.index,
+//               CharacteristicProperties.notify.index,
+//               CharacteristicProperties.write.index,
+//             ],
+//             descriptors: [notificationControlDescriptor],
+//             value: null,
+//             permissions: [
+//               AttributePermissions.readable.index,
+//               AttributePermissions.writeable.index
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
 
-    // Assume int is 32 bit...
-    Uint8List payload = Uint8List(4);
+//     log("Building payload...");
 
-    payload[0] = id & 0xFF;
-    payload[1] = (id >> 8) & 0xFF;
-    payload[2] = (id >> 16) & 0xFF;
-    payload[3] = (id >> 24) & 0xFF;
+//     // Assume int is 32 bit...
+//     Uint8List payload = Uint8List(4);
 
-    var manufacturerData = ManufacturerData(
-      manufacturerId: 0xFF,
-      data: payload,
-    );
+//     payload[0] = id & 0xFF;
+//     payload[1] = (id >> 8) & 0xFF;
+//     payload[2] = (id >> 16) & 0xFF;
+//     payload[3] = (id >> 24) & 0xFF;
 
-    log("Payload: $payload");
-    log("Advertising...");
+//     var manufacturerData = ManufacturerData(
+//       manufacturerId: 0xFF,
+//       data: payload,
+//     );
 
-    await BlePeripheral.startAdvertising(
-      services: [ APP_UUID ],
-      localName: name,
-      manufacturerData: manufacturerData,
-      addManufacturerDataInScanResponse: true,
-    );
-  }
+//     log("Payload: $payload");
+//     log("Advertising...");
 
-  void log(String text) => print("[ble] ${text}");
-}
+//     await BlePeripheral.startAdvertising(
+//       services: [ APP_UUID ],
+//       localName: name,
+//       manufacturerData: manufacturerData,
+//       addManufacturerDataInScanResponse: true,
+//     );
+//   }
+
+//   void log(String text) => print("[ble] ${text}");
+// }
