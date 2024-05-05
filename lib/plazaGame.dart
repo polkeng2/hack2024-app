@@ -13,7 +13,8 @@ import 'package:flutter_testing/components/user.dart';
 class PlazaGame extends FlameGame
     with ScrollDetector, ScaleDetector, TapDetector, MultiTouchDragDetector {
   User user;
-  PlazaGame({ required this.user });
+  List users = [];
+  PlazaGame({required this.user, required this.users});
   @override
   Color backgroundColor() => const Color.fromARGB(255, 5, 234, 81);
 
@@ -40,9 +41,24 @@ class PlazaGame extends FlameGame
       Vector2(32, 32),
     );
     world.add(mapC);
+    for (int i = 0; i < users.length; ++i) {
+      double posX = 32 * 8 + i * 100;
+      double posY = 32 * 8 + i * 100;
+      Actor actor = Actor(
+          position: Vector2(posX, posY),
+          size: Vector2(37, 72),
+          id: users[i].name);
+      actor.sprite = await loadSprite(
+          users[i].avatarSprite.replaceFirst(RegExp('assets/images/'), ''));
+      world.add(actor);
+    }
 
-    Actor actor = Actor(position: Vector2(32*15, 32*13), size: Vector2(54, 80), id: user.name);
-    actor.sprite = await loadSprite(user.avatarSprite.replaceFirst(RegExp('assets/images/'), ''));
+    Actor actor = Actor(
+        position: Vector2(32 * 15, 32 * 13),
+        size: Vector2(54, 80),
+        id: user.name);
+    actor.sprite = await loadSprite(
+        user.avatarSprite.replaceFirst(RegExp('assets/images/'), ''));
     world.add(actor);
   }
 

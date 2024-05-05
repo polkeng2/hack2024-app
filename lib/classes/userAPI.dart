@@ -7,15 +7,15 @@ import 'package:http/http.dart' as http;
 final String apiUrl = "https://hack.driescode.dev/";
 
 class UserAPI {
-  final int id;
-  final String token;
+  int id;
+  String token;
   final String name;
   final String hobbies;
   final int avatar;
 
   UserAPI({
-    required this.id,
-    required this.token,
+    this.id = 0,
+    this.token = "",
     required this.name,
     required this.hobbies,
     required this.avatar,
@@ -44,14 +44,15 @@ class UserAPI {
   static Future<UserAPI> createUser(UserAPI user) async {
     // Create a new user
     final response = await http.post(
-      Uri.parse('https://example.com/api/users'),
+      Uri.parse('${apiUrl}create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(user.toJson()),
+      body: jsonEncode(user),
     );
 
     if (response.statusCode == 200) {
+      //Decode only id and token
       return UserAPI.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to create user.');

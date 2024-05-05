@@ -1,5 +1,8 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_testing/classes/userAPI.dart';
+import 'package:flutter_testing/classes/userToken.dart';
+import 'package:flutter_testing/components/ble.dart';
 import 'package:flutter_testing/components/user.dart';
 import 'package:flutter_testing/meetsGame.dart';
 import 'package:flutter_testing/plazaGame.dart';
@@ -22,6 +25,8 @@ class _PlazaScreenState extends State<PlazaScreen> {
   late User usr1;
   late User usr2;
   late List users;
+  late List friends = List.empty();
+  late UserAPI userAPI;
 
   bool isZone = true;
 
@@ -29,26 +34,27 @@ class _PlazaScreenState extends State<PlazaScreen> {
 
   @override
   void initState() {
-    print("PlazaScreen initialized, triggering ble-init...");
-    print("Check BLE permissions...");
-
-    [
-      Permission.bluetooth,
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-      Permission.bluetoothAdvertise,
-      Permission.location,
-      Permission.locationWhenInUse
-    ].request().then((statuses) {
-      print(statuses);
-
-      // TODO: Handle permissions...
-      //  print("PlazaScreen initialized, triggering ble-init...");
-      Workmanager().registerOneOffTask('1', 'ble-init', inputData: {
-        'name': 'Polkeng',
-        'id': 1,
+    UserToken.getToken().then((value) {
+      print("PlazaScreen initialized, triggering ble-init...");
+      print("Check BLE permissions...");
+      [
+        Permission.bluetooth,
+        Permission.bluetoothScan,
+        Permission.bluetoothConnect,
+        Permission.bluetoothAdvertise,
+        Permission.location,
+        Permission.locationWhenInUse
+      ].request().then((statuses) async {
+        print(statuses);
+        userAPI = await UserAPI.fetchMe(value);
+        // TODO: Handle permissions...
+        //  print("PlazaScreen initialized, triggering ble-init...");
+        Workmanager().registerOneOffTask('1', 'ble-init', inputData: {
+          'name': userAPI.name,
+          'id': userAPI.id,
+        });
+        print("ble-init triggered");
       });
-      print("ble-init triggered");
     });
   }
 
@@ -59,11 +65,17 @@ class _PlazaScreenState extends State<PlazaScreen> {
     usr2 = User("Sara", "Hack", "assets/images/wizardICON.png");
     users = [usr1, usr2];
 
-    gamePlaza = PlazaGame(user: user);
+    /*
+    user.setUserName(userAPI.name);
+    user.setUserHobbies(userAPI.hobbies);
+    user.setUserAvatarIndex(userAPI.id);
+*/
+    gamePlaza = PlazaGame(user: user, users: friends);
     gameAwait = MeetsGame(
         mapTiled: "Forum.tmx",
         users: users,
-        callback: (val) => setState(() => showUser(val)));
+        callback: (val) => setState(() => createFriend(val)));
+    //callback: (val) => setState(() => showUser(val)));
 
     return Scaffold(
       appBar: AppBar(
@@ -179,6 +191,14 @@ class _PlazaScreenState extends State<PlazaScreen> {
         child: isZone ? const Text("meets!") : const Text("my zone"),
       ),
     );
+  }
+
+  void createFriend(String name) {
+    print("tapped");
+    if (name == "Alvaro")
+      friends.add(usr1);
+    else
+      friends.add(usr2);
   }
 
   void showUser(String userName) async {

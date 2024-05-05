@@ -4,6 +4,7 @@ import 'package:ble_peripheral/ble_peripheral.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:flutter_testing/classes/userAPI.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -24,7 +25,7 @@ class Ble {
 
   late final FlutterReactiveBle flutterReactiveBle;
 
-  Ble( { required this.name, required this.id }) {
+  Ble({required this.name, required this.id}) {
     flutterReactiveBle = FlutterReactiveBle();
   }
 
@@ -44,12 +45,17 @@ class Ble {
     int id = 0;
 
     Uint8List payload = device.manufacturerData;
-    id = payload[2] | (payload[3] << 8) | (payload[4] << 16) | (payload[5] << 24);
+    id = payload[2] |
+        (payload[3] << 8) |
+        (payload[4] << 16) |
+        (payload[5] << 24);
 
     print("Payload = $payload, payload0 = ${payload[0]}");
 
     log("Discovered \"${device.name}\", Id: $id");
-    // Notify
+    UserAPI.fetchUser(id).then((user) {
+      print("User: ${user.name}");
+    });
   }
 
   void doScan() async {
@@ -62,7 +68,8 @@ class Ble {
     // Check permissions
     log("Scanning nearby devices...");
 
-    flutterReactiveBle.scanForDevices(withServices: [ Uuid.parse(APP_UUID) ]).listen((device) {
+    flutterReactiveBle
+        .scanForDevices(withServices: [Uuid.parse(APP_UUID)]).listen((device) {
       // Skip already discovered devices
       if (discoveredDevices.containsKey(device.id)) {
         return;
@@ -135,7 +142,7 @@ class Ble {
     log("Advertising...");
 
     await BlePeripheral.startAdvertising(
-      services: [ APP_UUID ],
+      services: [APP_UUID],
       localName: name,
       manufacturerData: manufacturerData,
       addManufacturerDataInScanResponse: true,

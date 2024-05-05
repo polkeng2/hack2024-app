@@ -15,6 +15,11 @@ class UserToken {
     return result;
   }
 
+  static Future getToken() async {
+    String? token = _prefs.getString('token');
+    return token;
+  }
+
   static Future removeToken() async {
     await _prefs.remove('token');
     print("Token removed!");

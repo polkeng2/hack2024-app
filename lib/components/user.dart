@@ -1,7 +1,14 @@
 import 'package:flutter/foundation.dart';
 
+List avatarNameFiles = [
+  "assets/images/archerICON.png",
+  "assets/images/enchantressICON.png",
+  "assets/images/knightICON.png",
+  "assets/images/wizardICON.png",
+];
+
 class User extends ChangeNotifier {
-  late String id = "id";
+  late int id = 0;
   late String token = "";
   late String name = "name";
   late String hobbies = "hobbies";
@@ -43,6 +50,11 @@ class User extends ChangeNotifier {
 
   void setUserAvatar(String str) {
     avatarSprite = str;
+    notifyListeners();
+  }
+
+  void setUserAvatarIndex(int ptr) {
+    avatarSprite = avatarNameFiles[ptr];
     notifyListeners();
   }
 

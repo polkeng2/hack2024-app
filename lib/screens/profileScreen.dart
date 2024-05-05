@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_testing/classes/userAPI.dart';
 import 'package:flutter_testing/classes/userToken.dart';
 import 'package:flutter_testing/components/user.dart';
 import 'package:provider/provider.dart';
@@ -163,15 +164,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     //name: nameController.text; hobbies: hobbiesController.text;
-                    if (firstTime) Navigator.pushNamed(context, '/plaza');
-                    setState(() {
+                    if (firstTime) {
+                      /*
+                      var result = await UserAPI.createUser(UserAPI(
+                        name: user.name,
+                        hobbies: user.hobbies,
+                        avatar: _currentIndex,
+                      ));
+                      user.token = result.token;
+                      user.id = result.id;
+                      */
+
+                      UserToken.setToken(user.token);
+
+                      Navigator.pushNamed(context, '/plaza');
+                    }
+                    setState(() async {
                       if (editable) {
                         user.setUserName(nameController.text);
                         user.setUserHobbies(hobbiesController.text);
                         user.setUserAvatar(avatarNameFiles[_currentIndex]);
-                        //updateUser(user);
+                        await UserAPI.updateUser(new UserAPI(
+                            name: user.name,
+                            hobbies: user.hobbies,
+                            avatar: _currentIndex,
+                            id: user.id,
+                            token: user.token));
                       } else {
                         nameController.text = user.name;
                         hobbiesController.text = user.hobbies;
