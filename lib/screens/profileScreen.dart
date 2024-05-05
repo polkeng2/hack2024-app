@@ -19,14 +19,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   late String name = 'Roger';
   late String hobbies = "Volunteering, reading, and playing the guitar.";
+  late String avatarSprite = "archerICON.png";
 
   late TextEditingController nameController = TextEditingController();
   late TextEditingController hobbiesController = TextEditingController();
 
+  int _currentIndex = 0;
+
   //Esto api?
   List<Widget> items = [
-    Image.asset('assets/images/profile_icon.png'),
-    Image.asset('assets/images/profile_icon2.png'),
+    Image.asset('assets/images/archerICON.png'),
+    Image.asset('assets/images/enchantressICON.png'),
+    Image.asset('assets/images/knightICON.png'),
+    Image.asset('assets/images/wizardICON.png'),
+  ];
+
+  List avatarNameFiles = [
+    "assets/images/archerICON.png",
+    "assets/images/enchantressICON.png",
+    "assets/images/knightICON.png",
+    "assets/images/wizardICON.png",
   ];
 
   @override
@@ -107,15 +119,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         items: items,
                         options: CarouselOptions(
                           height: 200,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 3),
+                          autoPlayAnimationDuration: Duration(milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enlargeCenterPage: true,
+                          enlargeFactor: 0.7,
+                          onPageChanged: (index, reason) {
+                            _currentIndex = index;
+                            setState(() {});
+                          },
                           aspectRatio: 1.0,
-                          viewportFraction: 0.67,
+                          viewportFraction: 0.3,
                           initialPage: 0,
                           enableInfiniteScroll: true,
                           reverse: false,
                           scrollDirection: Axis.horizontal,
                         )),
-                    false => const Image(
-                        image: AssetImage('assets/images/profile_icon.png'),
+                    false => Image(
+                        image: AssetImage(avatarNameFiles[_currentIndex]),
                         width: 200,
                         height: 200),
                   },
