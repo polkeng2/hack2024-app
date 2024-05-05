@@ -2,11 +2,24 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_testing/plazaGame.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
+import 'package:workmanager/workmanager.dart';
 
-class PlazaScreen extends StatelessWidget {
-  PlazaScreen({super.key});
+class PlazaScreen extends StatefulWidget {
+  PlazaScreen({ super.key });
 
+  @override
+  State<StatefulWidget> createState()  => _PlazaScreenState();
+}
+
+class _PlazaScreenState extends State<PlazaScreen> {
   PlazaGame game = PlazaGame();
+
+  @override
+  void initState() {
+    print("PlazaScreen initialized, triggering ble-init...");
+    Workmanager().registerOneOffTask('ble-init', 'ble-init', inputData: { 'name': 'Polkeng' } );
+    print("ble-init triggered");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,4 +127,5 @@ class PlazaScreen extends StatelessWidget {
       body: GameWidget(game: game),
     );
   }
+
 }

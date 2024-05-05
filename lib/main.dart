@@ -9,11 +9,42 @@ import 'package:flutter_testing/screens/forumScreen.dart';
 import 'package:flutter_testing/screens/plazaScreen.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:workmanager/workmanager.dart';
 
 late final ValueNotifier<String> token;
+
+void wmDispatcher() {
+  Workmanager().executeTask((taskName, inputData) {
+    switch (taskName) {
+      case 'ble-init':
+        // bluetooth init...
+        if (inputData == null) {
+          print("WM (ble-init): inputData cannot be null!");
+          return Future.value(false);
+        }
+
+        if (!inputData.containsKey("name")) {
+          print("WM (ble-init): Required parameter 'name'");
+          return Future.value(false);
+        }
+
+        String username = inputData["name"];
+        print("WM (ble-init): Initialize BLE with name = $username");
+        
+        break;
+      default:
+        print("WM: Undefined task!");
+        return Future.value(false);
+    }
+
+    return Future.value(true);
+  });
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocalStorage();
+  Workmanager().initialize(wmDispatcher);
 
   token = ValueNotifier<String>(localStorage.getItem('token') ?? '');
   runApp(const MyApp());
