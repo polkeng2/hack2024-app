@@ -93,7 +93,7 @@ class _DateScreenState extends State<DateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           'Date picker',

@@ -51,36 +51,83 @@ class _DateListScreenState extends State<DateListScreen> {
       'place': 'Restaurant',
       'plan': 'Dinner'
     },
-    // Add more dates here
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          ListView.builder(
-            itemCount: pendingDates.length,
-            itemBuilder: (context, index) {
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: ListTile(
-                  title: Text(pendingDates[index]['sender']),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Time: ${pendingDates[index]['time']}'),
-                      Text('Place: ${pendingDates[index]['place']}'),
-                      Text('Plan: ${pendingDates[index]['plan']}'),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+      appBar: AppBar(
+        title: const Text('Dates'),
+        centerTitle: true,
+        backgroundColor: Colors.green,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            const Text('Pending dates', style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: pendingDates.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black26),
+                        color: Colors.grey[100],
+                      ),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Text(pendingDates[index]['sender']),
+                            subtitle:
+                                //Parse the date to dd/mm/yyyy hh:mm format
+                                Text(pendingDates[index]['time'].toString()),
+                            trailing: Text(pendingDates[index]['plan']),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            const Text('Confirmed dates', style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: confirmedDates.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black26),
+                        color: Colors.green[100],
+                      ),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Text(confirmedDates[index]['sender']),
+                            subtitle:
+                                //Parse the date to dd/mm/yyyy hh:mm format
+                                Text(confirmedDates[index]['time'].toString()),
+                            trailing: Text(confirmedDates[index]['plan']),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

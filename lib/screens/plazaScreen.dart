@@ -22,6 +22,7 @@ class PlazaScreen extends StatelessWidget {
       drawer: Drawer(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: ListView(
+          padding: const EdgeInsets.all(0.0),
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
@@ -30,13 +31,28 @@ class PlazaScreen extends StatelessWidget {
               child: Text(
                 'Menu',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Color.fromRGBO(255, 255, 255, 1),
                   fontSize: 24,
                 ),
               ),
             ),
+            const SizedBox(
+              height: 20,
+            ),
             ListTile(
-              title: const Text('Profile'),
+              title: const Text(
+                'Profile',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/profile',
+                  );
+                },
+              ),
               onTap: () {
                 Navigator.pushNamed(
                   context,
@@ -44,17 +60,23 @@ class PlazaScreen extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Set a date'),
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/setDate',
-                );
-              },
+            const SizedBox(
+              height: 20,
             ),
             ListTile(
-              title: const Text('Date list'),
+              title: const Text(
+                'Date list',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.calendar_today),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/dateList',
+                  );
+                },
+              ),
               onTap: () {
                 Navigator.pushNamed(
                   context,
@@ -62,12 +84,27 @@ class PlazaScreen extends StatelessWidget {
                 );
               },
             ),
+            const SizedBox(
+              height: 20,
+            ),
             ListTile(
-              title: const Text('Forum'),
+              title: const Text(
+                'Explore',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.public),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/explore',
+                  );
+                },
+              ),
               onTap: () {
                 Navigator.pushNamed(
                   context,
-                  '/forum',
+                  '/explore',
                 );
               },
             ),

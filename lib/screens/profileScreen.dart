@@ -112,13 +112,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           initialPage: 0,
                           enableInfiniteScroll: true,
                           reverse: false,
-                          /* autoPlay: true,
-                              autoPlayInterval: Duration(seconds: 3),
-                              autoPlayAnimationDuration: Duration(milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn, */
-                          //enlargeCenterPage: true,
-                          //enlargeFactor: 0.3,
-                          //onPageChanged: callbackFunction,
                           scrollDirection: Axis.horizontal,
                         )),
                     false => const Image(
@@ -144,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     //name: nameController.text; hobbies: hobbiesController.text;
                     //Navigator.pushNamed(context, '/plaza');
-                    /* setState(() {
+                    setState(() {
                       if (editable) {
                         name = nameController.text;
                         hobbies = hobbiesController.text;
@@ -153,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         hobbiesController.text = hobbies;
                       }
                       editable = !editable;
-                    }); */
+                    });
                   },
                   child: switch (editable) {
                     true => const Text("Save changes",

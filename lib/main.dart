@@ -44,9 +44,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/plaza': (context) => PlazaScreen(),
         '/profile': (context) => const ProfileScreen(),
-        '/setDate': (context) => const DateScreen(),
         '/dateList': (context) => const DateListScreen(),
-        '/forum': (context) => const ForumScreen(),
+        '/explore': (context) => const ForumScreen(),
       },
     );
   }
