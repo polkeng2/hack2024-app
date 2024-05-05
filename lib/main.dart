@@ -62,7 +62,8 @@ Future<void> main() async {
 
   runApp(
     ChangeNotifierProvider(
-      create: (context) => User(),
+      create: (context) =>
+          User("Name", "Hobbies", "assets/images/archerICON.png"),
       child: MyApp(),
     ),
   );

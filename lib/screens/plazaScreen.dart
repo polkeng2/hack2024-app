@@ -9,10 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 
 class PlazaScreen extends StatefulWidget {
-  PlazaScreen({ super.key });
+  PlazaScreen({super.key});
 
   @override
-  State<StatefulWidget> createState()  => _PlazaScreenState();
+  State<StatefulWidget> createState() => _PlazaScreenState();
 }
 
 class _PlazaScreenState extends State<PlazaScreen> {
@@ -32,12 +32,22 @@ class _PlazaScreenState extends State<PlazaScreen> {
     print("PlazaScreen initialized, triggering ble-init...");
     print("Check BLE permissions...");
 
-    [ Permission.bluetooth, Permission.bluetoothScan, Permission.bluetoothConnect, Permission.bluetoothAdvertise, Permission.location, Permission.locationWhenInUse ].request().then((statuses) {
+    [
+      Permission.bluetooth,
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+      Permission.bluetoothAdvertise,
+      Permission.location,
+      Permission.locationWhenInUse
+    ].request().then((statuses) {
       print(statuses);
 
       // TODO: Handle permissions...
       //  print("PlazaScreen initialized, triggering ble-init...");
-      Workmanager().registerOneOffTask('1', 'ble-init', inputData: { 'name': 'Polkeng', 'id': 1, } );
+      Workmanager().registerOneOffTask('1', 'ble-init', inputData: {
+        'name': 'Polkeng',
+        'id': 1,
+      });
       print("ble-init triggered");
     });
   }
@@ -45,12 +55,15 @@ class _PlazaScreenState extends State<PlazaScreen> {
   @override
   Widget build(BuildContext context) {
     var user = context.watch<User>();
-    usr1 = User("Alvaro", "assets/images/enchantressICON.png", "Play");
-    usr2 = User("Sara", "assets/images/wizardICON.png", "Hack");
-    users = [ usr1, usr2 ];
+    usr1 = User("Alvaro", "Play", "assets/images/enchantressICON.png");
+    usr2 = User("Sara", "Hack", "assets/images/wizardICON.png");
+    users = [usr1, usr2];
 
     gamePlaza = PlazaGame(user: user);
-    gameAwait = MeetsGame(mapTiled: "Forum.tmx", users: users, callback: (val) => setState(() => showUser(val)));
+    gameAwait = MeetsGame(
+        mapTiled: "Forum.tmx",
+        users: users,
+        callback: (val) => setState(() => showUser(val)));
 
     return Scaffold(
       appBar: AppBar(
@@ -153,7 +166,7 @@ class _PlazaScreenState extends State<PlazaScreen> {
           ],
         ),
       ),
-      body: GameWidget(game: isZone? gamePlaza : gameAwait),
+      body: GameWidget(game: isZone ? gamePlaza : gameAwait),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -161,15 +174,16 @@ class _PlazaScreenState extends State<PlazaScreen> {
           });
         },
         foregroundColor: Colors.black,
-        backgroundColor: isZone? Colors.white : Colors.grey,
+        backgroundColor: isZone ? Colors.white : Colors.grey,
         shape: const CircleBorder(),
-        child: isZone? const Text("meets!") : const Text("my zone"),
+        child: isZone ? const Text("meets!") : const Text("my zone"),
       ),
     );
   }
 
   void showUser(String userName) async {
-    User findUser(String id) => users.firstWhere((user) => user.name == userName);
+    User findUser(String id) =>
+        users.firstWhere((user) => user.name == userName);
     User userShown = findUser(userName);
 
     return showDialog<void>(
@@ -190,5 +204,4 @@ class _PlazaScreenState extends State<PlazaScreen> {
       ),
     );
   }
-
 }
