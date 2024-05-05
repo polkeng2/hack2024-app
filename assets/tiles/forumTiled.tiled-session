@@ -3,8 +3,9 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "Plaza.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "Forum.tmx": {
@@ -15,7 +16,35 @@
                 "y": 472.0451648151522
             }
         },
+        "Plaza.tmx": {
+            "scale": 0.39088541666666665,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 424.6768820786142,
+                "y": 480.95936042638243
+            }
+        },
         "TX Plant.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TX Props.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TX Struct.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TX Tileset Grass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TX Tileset Stone Ground.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TX Tileset Wall.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         }
@@ -24,9 +53,23 @@
     "map.height": 30,
     "map.lastUsedFormat": "tmx",
     "openFiles": [
+        "Forum.tmx",
+        "TX Tileset Grass.tsx",
+        "TX Tileset Wall.tsx",
+        "TX Struct.tsx",
+        "TX Tileset Stone Ground.tsx",
+        "Plaza.tmx",
+        "TX Props.tsx"
     ],
     "project": "forumTiled.tiled-project",
     "recentFiles": [
+        "Forum.tmx",
+        "TX Tileset Grass.tsx",
+        "TX Tileset Wall.tsx",
+        "TX Struct.tsx",
+        "TX Tileset Stone Ground.tsx",
+        "TX Props.tsx",
+        "Plaza.tmx",
         "TX Plant.tsx"
     ],
     "tileset.lastUsedFormat": "tsx"
