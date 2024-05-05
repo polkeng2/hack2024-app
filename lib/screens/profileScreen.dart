@@ -1,7 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_testing/components/user.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -43,6 +44,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var user = context.watch<User>();
+    name = user.name;
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -66,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 true => TextField(
                     controller: nameController,
                     decoration: InputDecoration(
-                      hintText: name,
+                      hintText: user.name,
                     ),
                     style: const TextStyle(
                       fontSize: 20,
@@ -76,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 false => Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
-                      name,
+                      user.name,
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.normal),
                     ),
@@ -90,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 true => TextField(
                     controller: hobbiesController,
                     decoration: InputDecoration(
-                      hintText: hobbies,
+                      hintText: user.hobbies,
                     ),
                     style: const TextStyle(
                       fontSize: 20,
@@ -99,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 false => Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(hobbies,
+                    child: Text(user.hobbies,
                         style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.normal)),
                   ),
@@ -137,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           scrollDirection: Axis.horizontal,
                         )),
                     false => Image(
-                        image: AssetImage(avatarNameFiles[_currentIndex]),
+                        image: AssetImage(user.getUserAvatar()),
                         width: 200,
                         height: 200),
                   },
@@ -163,9 +168,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (editable) {
                         name = nameController.text;
                         hobbies = hobbiesController.text;
+                        user.setUserName(name);
+                        user.setUserHobbies(hobbies);
+                        user.setUserAvatar(avatarNameFiles[_currentIndex]);
                       } else {
-                        nameController.text = name;
-                        hobbiesController.text = hobbies;
+                        nameController.text = user.name;
+                        hobbiesController.text = user.hobbies;
                       }
                       editable = !editable;
                     });

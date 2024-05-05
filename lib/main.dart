@@ -1,7 +1,10 @@
+import 'dart:js';
+
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_testing/components/user.dart';
 import 'package:flutter_testing/plazaGame.dart';
 import 'package:flutter_testing/screens/dateListScreen.dart';
 import 'package:flutter_testing/screens/dateScreen.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_testing/screens/forumScreen.dart';
 import 'package:flutter_testing/screens/plazaScreen.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 
 late final ValueNotifier<String> token;
@@ -47,7 +51,7 @@ Future<void> main() async {
   Workmanager().initialize(wmDispatcher);
 
   token = ValueNotifier<String>(localStorage.getItem('token') ?? '');
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(create: (context) => User(), child: const MyApp(),),);
 }
 
 class MyApp extends StatelessWidget {

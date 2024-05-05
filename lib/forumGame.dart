@@ -28,7 +28,7 @@ class ForumGame extends FlameGame
   late final CameraComponent cam;
   static const zoomPerScrollUnit = 0.02;
   static const double _minZoom = 1.0;
-  static const double _maxZoom = 2.0;
+  static const double _maxZoom = 1.2;
   double _startZoom = _maxZoom;
 
   final regular = TextPaint(
