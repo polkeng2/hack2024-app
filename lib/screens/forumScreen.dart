@@ -6,7 +6,7 @@ import 'package:flame/game.dart';
 import 'package:flutter_testing/forumGame.dart';
 
 class ForumScreen extends StatefulWidget {
-  const ForumScreen({ super.key });
+  const ForumScreen({super.key});
   @override
   State<ForumScreen> createState() => _ForumScreenState();
 }
@@ -16,10 +16,17 @@ class _ForumScreenState extends State<ForumScreen> {
     "Barcelona",
     "Madrid",
     "Sevilla",
+    "Bilbao",
+    "London",
+    "Paris",
+    "Japan"
   ];
   var activityNames = [
     "Party",
     "Nature",
+    "Cinema",
+    "Coffie",
+    "Tourism",
   ];
   var groupNames = [
     "Manuel",
@@ -34,9 +41,21 @@ class _ForumScreenState extends State<ForumScreen> {
 
   @override
   Widget build(BuildContext context) {
-    gameForum = ForumGame(type: "forum", actorsName: cityNames, callback: (val) => setState(() => mapSelection = val));
-    gameCity = ForumGame(type: "city", actorsName: activityNames, callback: (val) => setState(() => mapSelection = val));
-    gameActivity = ForumGame(type: "activity", actorsName: groupNames, callback: (val) => setState(() => mapSelection = val));
+    gameForum = ForumGame(
+        type: "forum",
+        mapTiled: "Forum.tmx",
+        actorsName: cityNames,
+        callback: (val) => setState(() => mapSelection = val));
+    gameCity = ForumGame(
+        type: "city",
+        mapTiled: "Forum.tmx",
+        actorsName: activityNames,
+        callback: (val) => setState(() => mapSelection = val));
+    gameActivity = ForumGame(
+        type: "activity",
+        mapTiled: "Forum.tmx",
+        actorsName: groupNames,
+        callback: (val) => setState(() => mapSelection = val));
 
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +74,7 @@ class _ForumScreenState extends State<ForumScreen> {
     switch (id) {
       case "forum":
         return GameWidget(game: gameForum);
-        
+
       case "city":
         return GameWidget(game: gameCity);
 

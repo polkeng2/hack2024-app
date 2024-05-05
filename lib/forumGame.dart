@@ -17,8 +17,12 @@ class ForumGame extends FlameGame
   List actors = [];
   List actorsName = [];
   String type;
+  String mapTiled;
   ForumGame(
-      {required this.type, required this.actorsName, required this.callback});
+      {required this.type,
+      required this.mapTiled,
+      required this.actorsName,
+      required this.callback});
 
   late TiledComponent mapC;
   late final CameraComponent cam;
@@ -45,14 +49,23 @@ class ForumGame extends FlameGame
     camera.moveBy(Vector2(32 * 16, 32 * 16));
 
     mapC = await TiledComponent.load(
-      'Plaza-01.tmx',
+      mapTiled,
       Vector2(32, 32),
     );
     world.add(mapC);
-
+    int countY = 0, multX = 0, multY = 1;
     for (int i = 0; i < actorsName.length; ++i) {
+      double posX = 32 * 8 + multX * 100;
+      double posY = 32 * 8 + multY.toDouble() * 100;
+      ++countY;
+      ++multX;
+      if (countY == 5) {
+        ++multY;
+        multX = 0;
+        countY = 0;
+      }
       Actor actor = Actor(
-          position: Vector2(32 * 15 + i.toDouble() * 70, 32 * 16),
+          position: Vector2(posX, posY),
           size: Vector2(37, 72),
           id: actorsName[i]);
       actor.sprite = await loadSprite('forumStatue.png');
@@ -60,7 +73,7 @@ class ForumGame extends FlameGame
       world.add(actor);
       world.add(TextComponent(
           text: actorsName[i],
-          position: Vector2(32 * 15 + i.toDouble() * 70, 32 * 16 + 75),
+          position: Vector2(posX, posY + 75),
           textRenderer: regular));
     }
   }

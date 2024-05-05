@@ -28,7 +28,7 @@ class PlazaGame extends FlameGame
     camera.moveBy(Vector2(32 * 16, 32 * 16));
 
     mapC = await TiledComponent.load(
-      'Plaza-01.tmx',
+      'Plaza.tmx',
       Vector2(32, 32),
     );
     world.add(mapC);
@@ -40,7 +40,8 @@ class PlazaGame extends FlameGame
 
   @override
   void onScroll(PointerScrollInfo info) {
-    camera.viewfinder.zoom += info.scrollDelta.global.y.sign * zoomPerScrollUnit;
+    camera.viewfinder.zoom +=
+        info.scrollDelta.global.y.sign * zoomPerScrollUnit;
     _checkScaleBorders();
     _checkDragBorders();
   }
@@ -64,7 +65,7 @@ class PlazaGame extends FlameGame
   }
 
   @override
-  void onDragUpdate(int pointerId, DragUpdateInfo info)  {
+  void onDragUpdate(int pointerId, DragUpdateInfo info) {
     _processDrag(info);
   }
 
@@ -104,7 +105,8 @@ class PlazaGame extends FlameGame
       yTranslate = mapSize.dy - worldRect.bottomRight.dy;
     }
 
-    camera.viewfinder.position = currentPosition.translated(xTranslate, yTranslate);
+    camera.viewfinder.position =
+        currentPosition.translated(xTranslate, yTranslate);
   }
 /*
   */
