@@ -2,6 +2,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_testing/classes/userToken.dart';
 import 'package:flutter_testing/components/ble.dart';
 import 'package:flutter_testing/components/user.dart';
 import 'package:flutter_testing/plazaGame.dart';
@@ -10,13 +11,11 @@ import 'package:flutter_testing/screens/dateScreen.dart';
 import 'package:flutter_testing/screens/forumScreen.dart';
 import 'package:flutter_testing/screens/plazaScreen.dart';
 import 'package:flutter_testing/screens/profileScreen.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-late final ValueNotifier<String> token;
 late bool bleInitialized = false;
-
 void wmDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
     switch (taskName) {
@@ -56,16 +55,62 @@ void wmDispatcher() {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initLocalStorage();
   await Workmanager().cancelAll();
   await Workmanager().initialize(wmDispatcher);
 
-  token = ValueNotifier<String>(localStorage.getItem('token') ?? '');
-  runApp(ChangeNotifierProvider(create: (context) => User(), child: const MyApp(),),);
+  await UserToken.init();
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => User(),
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool firstTime = UserToken.isFirstTime();
+
+  //bool token = _prefs.getString('token');
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Connect with others!',
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          titleSpacing: 32.0,
+        ),
+        useMaterial3: true,
+      ),
+      home: switch (firstTime) {
+        true => const ProfileScreen(),
+        false => PlazaScreen(),
+      },
+      routes: {
+        '/plaza': (context) => PlazaScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/dateList': (context) => const DateListScreen(),
+        '/explore': (context) => const ForumScreen(),
+      },
+    );
+  }
+}
+
+/* class MyApp extends StatelessWidget {
+  MyApp({super.key});
+  bool firstTime = UserToken.isFirstTime();
 
   // This widget is the root of your application.
   @override
@@ -82,8 +127,8 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: switch (token.value == '') {
-        true => PlazaScreen(),
+      home: switch (firstTime) {
+        true => const ProfileScreen(),
         false => PlazaScreen(),
       },
       routes: {
@@ -95,3 +140,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+ */

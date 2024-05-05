@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_testing/classes/userToken.dart';
 import 'package:flutter_testing/components/user.dart';
 import 'package:provider/provider.dart';
 
@@ -12,14 +13,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late bool editable = false;
-
   //Esto viene de la api, se hace llamada si token.value.isEmpty
 
   //late Future<List<ApiMarker>> futureApiMarkers = ApiMarker.getMarkers();
 
-  late String name = 'Roger';
-  late String hobbies = "Volunteering, reading, and playing the guitar.";
+  late bool firstTime = UserToken.isFirstTime();
+  late bool editable = firstTime;
+
+  late String name = '';
+  late String hobbies = '';
   late String avatarSprite = "archerICON.png";
 
   late TextEditingController nameController = TextEditingController();
@@ -46,7 +48,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     var user = context.watch<User>();
     name = user.name;
-
 
     return Scaffold(
       appBar: AppBar(
@@ -126,7 +127,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 200,
                           autoPlay: true,
                           autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration: Duration(milliseconds: 800),
+                          autoPlayAnimationDuration:
+                              Duration(milliseconds: 800),
                           autoPlayCurve: Curves.fastOutSlowIn,
                           enlargeCenterPage: true,
                           enlargeFactor: 0.7,
@@ -163,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onPressed: () {
                     //name: nameController.text; hobbies: hobbiesController.text;
-                    //Navigator.pushNamed(context, '/plaza');
+                    if (firstTime) Navigator.pushNamed(context, '/plaza');
                     setState(() {
                       if (editable) {
                         name = nameController.text;
@@ -171,6 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         user.setUserName(name);
                         user.setUserHobbies(hobbies);
                         user.setUserAvatar(avatarNameFiles[_currentIndex]);
+                        UserToken.removeToken();
                       } else {
                         nameController.text = user.name;
                         hobbiesController.text = user.hobbies;

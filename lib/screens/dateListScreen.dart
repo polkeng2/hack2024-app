@@ -33,7 +33,26 @@ class _DateListScreenState extends State<DateListScreen> {
     },
   ];
 
-  List<Map<String, dynamic>> confirmedDates = [];
+  List<Map<String, dynamic>> confirmedDates = [
+    {
+      'sender': 'John Doe',
+      'time': DateTime.now(),
+      'place': 'Restaurant',
+      'plan': 'Dinner'
+    },
+    {
+      'sender': 'John Doe',
+      'time': DateTime.now(),
+      'place': 'Restaurant',
+      'plan': 'Dinner'
+    },
+    {
+      'sender': 'John Doe',
+      'time': DateTime.now(),
+      'place': 'Restaurant',
+      'plan': 'Dinner'
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
