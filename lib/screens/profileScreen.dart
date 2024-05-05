@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_testing/classes/userToken.dart';
 import 'package:flutter_testing/components/user.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,8 +23,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late bool firstTime = UserToken.isFirstTime();
   late bool editable = firstTime;
 
-  late String name = '';
-  late String hobbies = '';
   late String avatarSprite = "archerICON.png";
 
   late TextEditingController nameController = TextEditingController();
@@ -47,7 +48,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     var user = context.watch<User>();
-    name = user.name;
 
     return Scaffold(
       appBar: AppBar(
@@ -126,9 +126,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         options: CarouselOptions(
                           height: 200,
                           autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
+                          autoPlayInterval: const Duration(seconds: 3),
                           autoPlayAnimationDuration:
-                              Duration(milliseconds: 800),
+                              const Duration(milliseconds: 800),
                           autoPlayCurve: Curves.fastOutSlowIn,
                           enlargeCenterPage: true,
                           enlargeFactor: 0.7,
@@ -168,11 +168,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     if (firstTime) Navigator.pushNamed(context, '/plaza');
                     setState(() {
                       if (editable) {
-                        name = nameController.text;
-                        hobbies = hobbiesController.text;
-                        user.setUserName(name);
-                        user.setUserHobbies(hobbies);
+                        user.setUserName(nameController.text);
+                        user.setUserHobbies(hobbiesController.text);
                         user.setUserAvatar(avatarNameFiles[_currentIndex]);
+                        //updateUser(user);
                       } else {
                         nameController.text = user.name;
                         hobbiesController.text = user.hobbies;
